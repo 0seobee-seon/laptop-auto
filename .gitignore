@@ -1,0 +1,20 @@
+# ── 빌드 산출물 ──────────────────────────
+build/
+dist/
+dist*/
+*.spec
+__pycache__/
+*.pyc
+
+# ── 엑셀 데이터 파일 (직원 개인정보 포함, 절대 업로드 금지) ──
+*.xlsx
+*.xls
+*.xlsm
+
+# ── 로그 ─────────────────────────────────
+*_log.txt
+output_log.txt
+run_log.txt
+
+# ── 로컬 설정 ────────────────────────────
+.claude/settings.local.json
