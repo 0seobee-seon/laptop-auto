@@ -20,3 +20,15 @@ Thumbs.db
 # Logs
 *.log
 npm-debug.log*
+
+# 임시 파일
+tmp_*.txt
+tmp_*.json
+
+# 대용량 바이너리 (필요 시 제거)
+*.hwpx
+*.hwp
+
+# Python 캐시
+__pycache__/
+*.py[cod]

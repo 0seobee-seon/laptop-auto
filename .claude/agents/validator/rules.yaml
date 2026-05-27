@@ -1,0 +1,109 @@
+# validator/rules.yaml
+# ─────────────────────────────────────────────────────────────────
+# 버그 수정 및 요구사항 이력 기반 검증 규칙
+#
+# 추가 원칙: 쉽게 추가, 삭제는 사람 승인 필수
+# 삭제 시:  # DEPRECATED: <날짜> <이유> 로 주석 처리 후 PR 승인
+# 정기 리뷰: 30회 연속 pass된 규칙은 중복·노후화 여부 검토
+# ─────────────────────────────────────────────────────────────────
+
+rules:
+  - id: rule-001
+    added_at: "2026-05-21"
+    origin: requirement
+    bug_summary: ""
+    criterion: >
+      개찰일이 기준 날짜 이하(<=)인 진행중 항목은
+      모두 개찰 섹션으로 이동되어야 한다.
+    check_type: logic
+    severity: critical
+    example_fail: |
+      진행중 섹션에 개찰일=5/21, 기준일=2026-05-21인 항목이 남아있음
+    example_pass: |
+      해당 항목이 개찰 섹션에 있고 진행중에 없음
+
+  - id: rule-002
+    added_at: "2026-05-21"
+    origin: requirement
+    bug_summary: ""
+    criterion: >
+      개찰일이 '추후', 빈 문자열, '-', '미정'인 항목은
+      기준 날짜에 관계없이 진행중 섹션에 유지되어야 한다.
+    check_type: logic
+    severity: critical
+    example_fail: |
+      개찰일='추후'인 항목이 개찰 섹션으로 이동됨
+    example_pass: |
+      해당 항목이 진행중 섹션에 유지됨
+
+  - id: rule-003
+    added_at: "2026-05-21"
+    origin: requirement
+    bug_summary: ""
+    criterion: >
+      개찰 섹션 레이블 셀의 rowSpan =
+      총 개찰 데이터 행 수 + 1(빈 행)과 일치해야 한다.
+    check_type: schema
+    severity: major
+    example_fail: |
+      개찰 항목 7개인데 rowSpan=5
+    example_pass: |
+      개찰 항목 7개, rowSpan=8 (7+1)
+
+  - id: rule-004
+    added_at: "2026-05-21"
+    origin: requirement
+    bug_summary: ""
+    criterion: >
+      진행중 섹션 레이블 셀의 rowSpan =
+      총 진행중 데이터 행 수 + 1(빈 행)과 일치해야 한다.
+    check_type: schema
+    severity: major
+    example_fail: |
+      진행중 항목 1개인데 rowSpan=6
+    example_pass: |
+      진행중 항목 1개, rowSpan=2 (1+1)
+
+  - id: rule-005
+    added_at: "2026-05-21"
+    origin: requirement
+    bug_summary: ""
+    criterion: >
+      이동된 항목 수 + 유지된 항목 수 =
+      원본 진행중 항목 수 (데이터 유실 없음).
+    check_type: logic
+    severity: critical
+    example_fail: |
+      원본 진행중 5건 → 이동 3건 + 유지 1건 = 4건 (1건 누락)
+    example_pass: |
+      원본 진행중 5건 → 이동 4건 + 유지 1건 = 5건 일치
+
+  - id: rule-006
+    added_at: "2026-05-21"
+    origin: requirement
+    bug_summary: ""
+    criterion: >
+      셀의 rowAddr 값이 테이블 내 실제 행 위치(0-based)와
+      일치해야 한다 (XML 구조 무결성).
+    check_type: schema
+    severity: minor
+    example_fail: |
+      row 4에 있는 셀인데 rowAddr="5"
+    example_pass: |
+      row 4에 있는 셀의 rowAddr="4"
+
+# ─────────────────────────────────────────────────────────────────
+# 신규 버그 발생 시 아래 템플릿으로 추가:
+#
+#  - id: rule-NNN
+#    added_at: "YYYY-MM-DD"
+#    origin: bug-fix            # bug-fix | requirement | manual
+#    bug_summary: "버그 한 줄 요약"
+#    criterion: "검증 기준 (조건 A이면 B여야 한다)"
+#    check_type: schema         # schema | logic | llm
+#    severity: critical         # critical | major | minor
+#    example_fail: |
+#      실패 케이스 예시
+#    example_pass: |
+#      통과 케이스 예시
+# ─────────────────────────────────────────────────────────────────
